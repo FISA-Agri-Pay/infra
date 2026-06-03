@@ -1,9 +1,9 @@
-﻿---
-name: 인프라 작업
-description: 인프라 설정, 마이그레이션, 운영 작업을 관리합니다.
+---
+name: "인프라 작업"
+description: "인프라 설정, 마이그레이션, 운영 작업을 관리합니다."
 title: "[Infra] "
-labels: ["infra"]
-assignees: []
+labels: "infra"
+assignees: ""
 ---
 
 ## 작업 내용

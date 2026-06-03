@@ -1,9 +1,9 @@
-﻿---
-name: 기능 요청
-description: 새로운 인프라 기능 또는 배포 기능을 제안합니다.
+---
+name: "기능 요청"
+description: "새로운 인프라 기능 또는 배포 기능을 제안합니다."
 title: "[Feature] "
-labels: ["feature", "infra"]
-assignees: []
+labels: "feature, infra"
+assignees: ""
 ---
 
 ## 목적
