@@ -1,6 +1,6 @@
 ---
 name: "문서 작업"
-description: "인프라 문서 추가 또는 수정을 요청합니다."
+about: "인프라 문서 추가 또는 수정을 요청합니다."
 title: "[Docs] "
 labels: "documentation, infra"
 assignees: ""
