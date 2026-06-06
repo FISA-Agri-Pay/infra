@@ -33,7 +33,7 @@ terraform plan
 terraform apply
 ```
 
-적용 후 aws 콘솔에서 EKS 클러스터, 워커노드 EC2 두 개, VPC 생성 되는 것을 확인할 수 있습니다.
+적용 후 AWS 콘솔에서 EKS 클러스터와 Managed Node Group(EC2)이 생성되는 것을 확인할 수 있습니다. (VPC는 새로 생성되지 않으며, 입력한 기존 VPC/서브넷을 사용합니다. EC2 개수는 노드 그룹 스케일링 설정에 따라 달라집니다.)
 
 ## 참고사항
 
