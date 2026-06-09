@@ -1,0 +1,1109 @@
+{
+  "annotations": {
+    "list": []
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "links": [],
+  "panels": [
+    {
+      "id": 1,
+      "type": "stat",
+      "title": "전체 차단 이벤트(최근 5분)",
+      "description": "노이즈를 포함한 전체 차단 로그 수치",
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 0,
+        "y": 0
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.2.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "expr": "sum(count_over_time({job=\"pfsense\"} |= \"filterlog\" |= \"match,block\"[5m])) or vector(0)",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "운영 영향 차단 이벤트(최근 5분)",
+      "description": "broadcast, 외부 DNS 직접 질의 등 반복성 로그를 제외한 운영 영향 차단 이벤트",
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 4,
+        "y": 0
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 1
+              },
+              {
+                "color": "red",
+                "value": 50
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.2.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "expr": "sum(count_over_time({job=\"pfsense\"} |= \"filterlog\" |= \"match,block\" != \"255.255.255.255\" != \"224.\" != \"0.0.0.0\" != \",137,\" != \",138,\" != \",67,\" != \",68,\" != \"8.8.8.8\" != \"1.1.1.1\"[5m])) or vector(0)",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "AWS-OnPrem 통신 이벤트(최근 1시간)",
+      "description": "AWS VPC 172.20.0.0/16 또는 IPsec enc0 경유 이벤트",
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 8,
+        "y": 0
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.2.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "expr": "sum(count_over_time({job=\"pfsense\"} |~ \"172\\\\.20\\\\.|enc0\"[1h])) or vector(0)",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "type": "stat",
+      "title": "관리자 감사 이벤트(최근 1시간)",
+      "description": "관리자 로그인, 실패, 로그아웃, 방화벽 설정 변경 이벤트",
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 12,
+        "y": 0
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 1
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.2.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "expr": "sum(count_over_time({job=\"pfsense\"} |~ \"Successful login|Failed|Authentication error|Configuration Change|logged out\"[1h])) or vector(0)",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "type": "stat",
+      "title": "CI/CD 경로 이벤트(최근 1시간)",
+      "description": "Jenkins, GitLab, Worker D, Kubernetes API 관련 흐름",
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 16,
+        "y": 0
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.2.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "expr": "sum(count_over_time({job=\"pfsense\"} |~ \"192\\\\.168\\\\.100\\\\.(31|32|33)\" |~ \",(22|80|443|8080|6443),\"[1h])) or vector(0)",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "type": "stat",
+      "title": "DB 접근/복제 이벤트(최근 1시간)",
+      "description": "PostgreSQL Primary/Standby 및 DB 5432 관련 흐름",
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 20,
+        "y": 0
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.2.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "expr": "sum(count_over_time({job=\"pfsense\"} |~ \"(10\\\\.30\\\\.4\\\\.11|192\\\\.168\\\\.100\\\\.23)\" |~ \",5432,\"[1h])) or vector(0)",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "type": "timeseries",
+      "title": "허용/전체 차단/운영 영향 차단 추이",
+      "description": "전체 허용/차단 추이와 운영 영향 차단 추이를 분리",
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 4
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "expr": "sum(count_over_time({job=\"pfsense\"} |= \"filterlog\" |= \"match,pass\"[5m])) or vector(0)",
+          "legendFormat": "허용",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "expr": "sum(count_over_time({job=\"pfsense\"} |= \"filterlog\" |= \"match,block\"[5m])) or vector(0)",
+          "legendFormat": "전체 차단",
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "expr": "sum(count_over_time({job=\"pfsense\"} |= \"filterlog\" |= \"match,block\" != \"255.255.255.255\" != \"224.\" != \"0.0.0.0\" != \",137,\" != \",138,\" != \",67,\" != \",68,\" != \"8.8.8.8\" != \"1.1.1.1\"[5m])) or vector(0)",
+          "legendFormat": "운영 영향 차단",
+          "refId": "C"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "type": "timeseries",
+      "title": "주요 구간별 차단 추이",
+      "description": "vmx 인터페이스명을 발표용 한글 구간명으로 구분",
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 4
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "expr": "sum(count_over_time({job=\"pfsense\"} |= \"filterlog\" |= \"match,block\" != \"255.255.255.255\" != \"224.\" != \"0.0.0.0\" |= \"vmx1\"[5m])) or vector(0)",
+          "legendFormat": "LAN/관리망(192.168.100.x)",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "expr": "sum(count_over_time({job=\"pfsense\"} |= \"filterlog\" |= \"match,block\" != \"255.255.255.255\" != \"224.\" != \"0.0.0.0\" |= \"vmx0.302\"[5m])) or vector(0)",
+          "legendFormat": "K8S VLAN(10.30.2.x)",
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "expr": "sum(count_over_time({job=\"pfsense\"} |= \"filterlog\" |= \"match,block\" != \"255.255.255.255\" != \"224.\" != \"0.0.0.0\" |= \"vmx0.304\"[5m])) or vector(0)",
+          "legendFormat": "DB VLAN(10.30.4.x)",
+          "refId": "C"
+        },
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "expr": "sum(count_over_time({job=\"pfsense\"} |= \"filterlog\" |= \"match,block\" != \"255.255.255.255\" != \"224.\" != \"0.0.0.0\" |= \"enc0\"[5m])) or vector(0)",
+          "legendFormat": "AWS-OnPrem VPN",
+          "refId": "D"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "type": "timeseries",
+      "title": "핵심 서비스 경로 추이",
+      "description": "AWS-OnPrem, CI/CD, DB, 관리자 감사 흐름 추이",
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 12
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "expr": "sum(count_over_time({job=\"pfsense\"} |~ \"172\\\\.20\\\\.|enc0\"[5m])) or vector(0)",
+          "legendFormat": "AWS-OnPrem",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "expr": "sum(count_over_time({job=\"pfsense\"} |~ \"192\\\\.168\\\\.100\\\\.(31|32|33)\" |~ \",(22|80|443|8080|6443),\"[5m])) or vector(0)",
+          "legendFormat": "CI/CD",
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "expr": "sum(count_over_time({job=\"pfsense\"} |~ \"(10\\\\.30\\\\.4\\\\.11|192\\\\.168\\\\.100\\\\.23)\" |~ \",5432,\"[5m])) or vector(0)",
+          "legendFormat": "DB",
+          "refId": "C"
+        },
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "expr": "sum(count_over_time({job=\"pfsense\"} |~ \"Successful login|Failed|Authentication error|Configuration Change|logged out\"[5m])) or vector(0)",
+          "legendFormat": "관리자 감사",
+          "refId": "D"
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "type": "timeseries",
+      "title": "외부 DNS 직접 질의 차단 추이",
+      "description": "내부 DNS가 아닌 8.8.8.8, 1.1.1.1 직접 DNS 질의 차단 추이",
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 12
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "expr": "sum(count_over_time({job=\"pfsense\"} |= \"filterlog\" |= \"match,block\" |~ \"(8\\\\.8\\\\.8\\\\.8|1\\\\.1\\\\.1\\\\.1)\" |~ \",53,\"[5m])) or vector(0)",
+          "legendFormat": "외부 DNS 차단",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "type": "table",
+      "title": "운영 영향 차단 출발지 Top 10",
+      "description": "최근 1시간 기준 운영 영향 차단이 많이 발생한 출발지",
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 20
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "showHeader": true,
+        "cellHeight": "sm",
+        "footer": {
+          "show": false,
+          "reducer": [
+            "sum"
+          ],
+          "countRows": false,
+          "fields": ""
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "expr": "topk(10, sum by (src) (count_over_time({job=\"pfsense\"} |= \"filterlog\" |= \"match,block\" != \"255.255.255.255\" != \"224.\" != \"0.0.0.0\" != \",137,\" != \",138,\" != \",67,\" != \",68,\" != \"8.8.8.8\" != \"1.1.1.1\" | regexp \"filterlog\\\\[[0-9]+\\\\]: [^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,block,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,(?P<src>(?:[0-9]{1,3}\\\\.){3}[0-9]{1,3}),(?P<dst>(?:[0-9]{1,3}\\\\.){3}[0-9]{1,3}),(?P<src_port>[0-9]+),(?P<dst_port>[0-9]+)\" [1h])))",
+          "refId": "A",
+          "instant": true
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "type": "table",
+      "title": "운영 영향 차단 목적지 Top 10",
+      "description": "최근 1시간 기준 운영 영향 차단이 많이 발생한 목적지",
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 8,
+        "y": 20
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "showHeader": true,
+        "cellHeight": "sm",
+        "footer": {
+          "show": false,
+          "reducer": [
+            "sum"
+          ],
+          "countRows": false,
+          "fields": ""
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "expr": "topk(10, sum by (dst) (count_over_time({job=\"pfsense\"} |= \"filterlog\" |= \"match,block\" != \"255.255.255.255\" != \"224.\" != \"0.0.0.0\" != \",137,\" != \",138,\" != \",67,\" != \",68,\" != \"8.8.8.8\" != \"1.1.1.1\" | regexp \"filterlog\\\\[[0-9]+\\\\]: [^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,block,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,(?P<src>(?:[0-9]{1,3}\\\\.){3}[0-9]{1,3}),(?P<dst>(?:[0-9]{1,3}\\\\.){3}[0-9]{1,3}),(?P<src_port>[0-9]+),(?P<dst_port>[0-9]+)\" [1h])))",
+          "refId": "A",
+          "instant": true
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "type": "table",
+      "title": "운영 영향 차단 목적지 포트 Top 10",
+      "description": "최근 1시간 기준 운영 영향 차단이 많이 발생한 목적지 포트",
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 20
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "showHeader": true,
+        "cellHeight": "sm",
+        "footer": {
+          "show": false,
+          "reducer": [
+            "sum"
+          ],
+          "countRows": false,
+          "fields": ""
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "expr": "topk(10, sum by (dst_port) (count_over_time({job=\"pfsense\"} |= \"filterlog\" |= \"match,block\" != \"255.255.255.255\" != \"224.\" != \"0.0.0.0\" != \",137,\" != \",138,\" != \",67,\" != \",68,\" != \"8.8.8.8\" != \"1.1.1.1\" | regexp \"filterlog\\\\[[0-9]+\\\\]: [^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,block,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,(?P<src>(?:[0-9]{1,3}\\\\.){3}[0-9]{1,3}),(?P<dst>(?:[0-9]{1,3}\\\\.){3}[0-9]{1,3}),(?P<src_port>[0-9]+),(?P<dst_port>[0-9]+)\" [1h])))",
+          "refId": "A",
+          "instant": true
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "type": "logs",
+      "title": "운영 영향 차단 로그",
+      "description": "반복성 노이즈를 제외하고 운영 영향 가능성이 있는 차단 로그",
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 28
+      },
+      "options": {
+        "dedupStrategy": "none",
+        "enableLogDetails": true,
+        "prettifyLogMessage": false,
+        "showCommonLabels": false,
+        "showLabels": false,
+        "showTime": true,
+        "sortOrder": "Descending",
+        "wrapLogMessage": true
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "expr": "{job=\"pfsense\"} |= \"filterlog\" |= \"match,block\" != \"255.255.255.255\" != \"224.\" != \"0.0.0.0\" != \",137,\" != \",138,\" != \",67,\" != \",68,\" != \"8.8.8.8\" != \"1.1.1.1\" | json | line_format \"{{.message}}\"",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 15,
+      "type": "logs",
+      "title": "외부 DNS 직접 질의 차단 로그",
+      "description": "8.8.8.8, 1.1.1.1 직접 DNS 질의 차단 로그",
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 28
+      },
+      "options": {
+        "dedupStrategy": "none",
+        "enableLogDetails": true,
+        "prettifyLogMessage": false,
+        "showCommonLabels": false,
+        "showLabels": false,
+        "showTime": true,
+        "sortOrder": "Descending",
+        "wrapLogMessage": true
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "expr": "{job=\"pfsense\"} |= \"filterlog\" |= \"match,block\" |~ \"(8\\\\.8\\\\.8\\\\.8|1\\\\.1\\\\.1\\\\.1)\" |~ \",53,\" | json | line_format \"{{.message}}\"",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 16,
+      "type": "logs",
+      "title": "AWS-OnPrem VPN/VPC 로그",
+      "description": "AWS VPC 172.20.0.0/16 또는 enc0 경유 로그",
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 36
+      },
+      "options": {
+        "dedupStrategy": "none",
+        "enableLogDetails": true,
+        "prettifyLogMessage": false,
+        "showCommonLabels": false,
+        "showLabels": false,
+        "showTime": true,
+        "sortOrder": "Descending",
+        "wrapLogMessage": true
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "expr": "{job=\"pfsense\"} |~ \"172\\\\.20\\\\.|enc0\" | json | line_format \"{{.message}}\"",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 17,
+      "type": "logs",
+      "title": "관리자 감사 로그",
+      "description": "관리자 로그인, 실패, 로그아웃, 설정 변경 로그",
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 36
+      },
+      "options": {
+        "dedupStrategy": "none",
+        "enableLogDetails": true,
+        "prettifyLogMessage": false,
+        "showCommonLabels": false,
+        "showLabels": false,
+        "showTime": true,
+        "sortOrder": "Descending",
+        "wrapLogMessage": true
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "expr": "{job=\"pfsense\"} |~ \"Successful login|Failed|Authentication error|Configuration Change|logged out\" | json | line_format \"{{.message}}\"",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 18,
+      "type": "logs",
+      "title": "CI/CD 및 Kubernetes 제어 로그",
+      "description": "Jenkins, GitLab, Worker D, Kubernetes API 관련 로그",
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 44
+      },
+      "options": {
+        "dedupStrategy": "none",
+        "enableLogDetails": true,
+        "prettifyLogMessage": false,
+        "showCommonLabels": false,
+        "showLabels": false,
+        "showTime": true,
+        "sortOrder": "Descending",
+        "wrapLogMessage": true
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "expr": "{job=\"pfsense\"} |~ \"192\\\\.168\\\\.100\\\\.(31|32|33)\" |~ \",(22|80|443|8080|6443),\" | json | line_format \"{{.message}}\"",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 19,
+      "type": "logs",
+      "title": "DB 접근/복제 경로 로그",
+      "description": "DB 5432 및 PostgreSQL Primary/Standby 관련 로그",
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 44
+      },
+      "options": {
+        "dedupStrategy": "none",
+        "enableLogDetails": true,
+        "prettifyLogMessage": false,
+        "showCommonLabels": false,
+        "showLabels": false,
+        "showTime": true,
+        "sortOrder": "Descending",
+        "wrapLogMessage": true
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "expr": "{job=\"pfsense\"} |~ \"(10\\\\.30\\\\.4\\\\.11|192\\\\.168\\\\.100\\\\.23)\" |~ \",5432,\" | json | line_format \"{{.message}}\"",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 20,
+      "type": "logs",
+      "title": "방화벽 정책 변경 이력",
+      "description": "방화벽 정책 변경 감사 로그",
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 52
+      },
+      "options": {
+        "dedupStrategy": "none",
+        "enableLogDetails": true,
+        "prettifyLogMessage": false,
+        "showCommonLabels": false,
+        "showLabels": false,
+        "showTime": true,
+        "sortOrder": "Descending",
+        "wrapLogMessage": true
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "expr": "{job=\"pfsense\"} |= \"Configuration Change\" | json | line_format \"{{.message}}\"",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 21,
+      "type": "logs",
+      "title": "pfSense 원본 로그 상세 조회",
+      "description": "상세 분석용 원본 로그. 평소에는 상단 분류 패널을 우선 확인",
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 52
+      },
+      "options": {
+        "dedupStrategy": "none",
+        "enableLogDetails": true,
+        "prettifyLogMessage": false,
+        "showCommonLabels": false,
+        "showLabels": false,
+        "showTime": true,
+        "sortOrder": "Descending",
+        "wrapLogMessage": true
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "expr": "{job=\"pfsense\"} | json | line_format \"{{.message}}\"",
+          "refId": "A"
+        }
+      ]
+    }
+  ],
+  "refresh": "10s",
+  "schemaVersion": 39,
+  "tags": [
+    "pfsense",
+    "loki",
+    "observability",
+    "hybrid-cloud",
+    "aws",
+    "onprem",
+    "network-security"
+  ],
+  "templating": {
+    "list": [
+      {
+        "current": {},
+        "hide": 0,
+        "includeAll": false,
+        "label": "Loki 데이터소스",
+        "multi": false,
+        "name": "DS_LOKI",
+        "options": [],
+        "query": "loki",
+        "refresh": 1,
+        "regex": "",
+        "type": "datasource"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-1h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "pfSense 하이브리드 네트워크 관측 대시보드",
+  "uid": "pfsense-network-observability-ko",
+  "version": 1,
+  "weekStart": "",
+  "description": "AWS-OnPrem, 관리자 감사, CI/CD, DB, Kubernetes 관련 방화벽 이벤트를 분류해 장애 원인과 보안 이벤트를 추적하는 pfSense 네트워크 Observability 대시보드"
+}

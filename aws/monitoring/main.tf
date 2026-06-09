@@ -1,9 +1,3 @@
-locals {
-  lb_additional_resource_tags = join(",", [
-    for key, value in var.common_tags : "${key}=${value}"
-  ])
-}
-
 data "aws_eks_cluster" "this" {
   name = var.cluster_name
 }
@@ -27,20 +21,12 @@ provider "helm" {
 }
 
 resource "helm_release" "loki" {
-  name             = "loki"
-  namespace        = var.namespace
-  create_namespace = false
-
+  name       = "loki"
+  namespace  = var.namespace
   repository = "https://grafana.github.io/helm-charts"
   chart      = "loki"
-  version    = var.loki_chart_version
-
-  wait    = true
-  timeout = 600
 
   values = [
-    templatefile("${path.module}/values/loki-values.yaml.tftpl", {
-      lb_additional_resource_tags = local.lb_additional_resource_tags
-    })
+    file("${path.module}/values/loki-values.yaml")
   ]
 }
