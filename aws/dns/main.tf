@@ -12,7 +12,7 @@ data "terraform_remote_state" "edge" {
   backend = "s3"
   config = {
     bucket = "kkpp-aws-terraform-state"
-    key    = "edge/terraform.tfstate"
+    key    = "edge-security/terraform.tfstate"
     region = "ap-northeast-2"
   }
 }

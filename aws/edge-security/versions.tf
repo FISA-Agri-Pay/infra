@@ -10,7 +10,7 @@ terraform {
 
   backend "s3" {
     bucket         = "kkpp-aws-terraform-state"
-    key            = "edge/terraform.tfstate"
+    key            = "edge-security/terraform.tfstate"
     region         = "ap-northeast-2"
     encrypt        = true
     dynamodb_table = "kkpp-terraform-locks"
