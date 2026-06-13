@@ -161,7 +161,8 @@ resource "aws_cloudfront_distribution" "web_edge" {
   http_version        = "http2"
   price_class         = "PriceClass_200"
   default_root_object = "admin/index.html"
-  aliases             = []
+  aliases             = var.aliases
+  web_acl_id          = var.web_acl_arn
   wait_for_deployment = false
 
   # S3 website origins
@@ -279,8 +280,10 @@ resource "aws_cloudfront_distribution" "web_edge" {
   }
 
   viewer_certificate {
-    cloudfront_default_certificate = true
-    minimum_protocol_version       = "TLSv1"
+    cloudfront_default_certificate = var.acm_certificate_arn == null
+    acm_certificate_arn            = var.acm_certificate_arn
+    ssl_support_method             = var.acm_certificate_arn == null ? null : "sni-only"
+    minimum_protocol_version       = var.acm_certificate_arn == null ? "TLSv1" : "TLSv1.2_2021"
   }
 
   tags = merge(local.common_tags, { Name = "kkpp-web-edge" })
