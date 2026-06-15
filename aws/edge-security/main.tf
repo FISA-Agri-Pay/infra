@@ -4,6 +4,19 @@ locals {
     ManagedBy = "terraform"
     Service   = "web-edge"
   }
+
+  # CommonRuleSet sub-rules that false-positive on binary multipart uploads
+  # (image bytes trip the body inspectors; uploads always exceed the 8 KB body
+  # limit). Each is overridden to Count below so it only labels the request, and
+  # the BlockManagedBodyRulesExceptUploads rule re-blocks the label on every path
+  # EXCEPT the admin image-upload endpoint — keeping full protection elsewhere.
+  crs_body_overrides = {
+    "SizeRestrictions_BODY"   = "awswaf:managed:aws:core-rule-set:SizeRestrictions_Body"
+    "CrossSiteScripting_BODY" = "awswaf:managed:aws:core-rule-set:CrossSiteScripting_Body"
+    "GenericRFI_BODY"         = "awswaf:managed:aws:core-rule-set:GenericRFI_Body"
+  }
+
+  upload_path_prefix = "/api/v1/admin/products/images"
 }
 
 # ---------------------------------------------------------------------------
@@ -47,12 +60,82 @@ resource "aws_wafv2_web_acl" "cloudfront" {
       managed_rule_group_statement {
         name        = "AWSManagedRulesCommonRuleSet"
         vendor_name = "AWS"
+
+        # Body inspectors that false-positive on binary image uploads — flipped
+        # to Count here, then re-blocked off the upload path (see locals).
+        dynamic "rule_action_override" {
+          for_each = local.crs_body_overrides
+          content {
+            name = rule_action_override.key
+            action_to_use {
+              count {}
+            }
+          }
+        }
       }
     }
 
     visibility_config {
       cloudwatch_metrics_enabled = true
       metric_name                = "CommonRuleSet"
+      sampled_requests_enabled   = true
+    }
+  }
+
+  # ---------------------------------------------------------------------------
+  # Re-block the body-inspection labels set by CommonRuleSet above on every path
+  # EXCEPT the admin image-upload endpoint. Runs after CommonRuleSet (priority
+  # 10) so the labels are present.
+  # ---------------------------------------------------------------------------
+  rule {
+    name     = "BlockManagedBodyRulesExceptUploads"
+    priority = 11
+
+    action {
+      block {}
+    }
+
+    statement {
+      and_statement {
+        statement {
+          or_statement {
+            dynamic "statement" {
+              for_each = local.crs_body_overrides
+              content {
+                label_match_statement {
+                  scope = "LABEL"
+                  key   = statement.value
+                }
+              }
+            }
+          }
+        }
+
+        statement {
+          not_statement {
+            statement {
+              byte_match_statement {
+                search_string         = local.upload_path_prefix
+                positional_constraint = "STARTS_WITH"
+
+                field_to_match {
+                  uri_path {}
+                }
+
+                text_transformation {
+                  priority = 0
+                  type     = "NONE"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      metric_name                = "BlockManagedBodyRulesExceptUploads"
       sampled_requests_enabled   = true
     }
   }
