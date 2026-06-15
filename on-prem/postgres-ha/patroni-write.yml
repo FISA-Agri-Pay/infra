@@ -1,0 +1,59 @@
+scope: pg-cluster
+namespace: /service/
+name: postgresql-write
+
+etcd3:
+  hosts:
+    - 192.168.100.22:32379
+
+restapi:
+  listen: 0.0.0.0:8008
+  connect_address: 192.168.100.23:8008
+
+bootstrap:
+  dcs:
+    ttl: 30
+    loop_wait: 10
+    retry_timeout: 10
+    maximum_lag_on_failover: 1048576
+    postgresql:
+      use_pg_rewind: true
+      use_slots: true
+      parameters:
+        wal_level: replica
+        hot_standby: "on"
+        max_wal_senders: 10
+        max_replication_slots: 10
+        wal_keep_size: 512MB
+        wal_log_hints: "on"
+
+  pg_hba:
+    - local all postgres peer
+    - local all all peer
+    - host all all 127.0.0.1/32 scram-sha-256
+    - host all all 0.0.0.0/0 scram-sha-256
+    - host replication repl_user 192.168.100.0/24 scram-sha-256
+    - host replication repl_user 10.30.4.0/24 scram-sha-256
+
+postgresql:
+  listen: 0.0.0.0:5432
+  connect_address: 192.168.100.23:5432
+  data_dir: /var/lib/postgresql/16/main
+  config_dir: /etc/postgresql/16/main
+  bin_dir: /usr/lib/postgresql/16/bin
+  pgpass: /var/lib/postgresql/.pgpass
+  authentication:
+    superuser:
+      username: postgres
+      password: postgres
+    replication:
+      username: repl_user
+      password: postgres
+  parameters:
+    unix_socket_directories: /var/run/postgresql
+
+tags:
+  nofailover: false
+  noloadbalance: false
+  clonefrom: false
+  nosync: false
