@@ -1,0 +1,24 @@
+﻿tempo:
+  reportingEnabled: false
+
+  receivers:
+    otlp:
+      protocols:
+        grpc:
+          endpoint: 0.0.0.0:4317
+        http:
+          endpoint: 0.0.0.0:4318
+
+  storage:
+    trace:
+      backend: local
+      local:
+        path: /var/tempo/traces
+
+persistence:
+  enabled: true
+  size: 10Gi
+  storageClassName: gp2
+
+service:
+  type: ClusterIP
