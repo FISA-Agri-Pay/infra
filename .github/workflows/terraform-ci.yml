@@ -1,0 +1,33 @@
+name: terraform-ci
+
+on:
+  pull_request:
+    paths:
+      - "aws/**/*.tf"
+      - ".github/workflows/terraform-ci.yml"
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        layer:
+          - aws/dns
+          - aws/edge-security
+          - aws/web-edge
+          - aws/eks
+          - aws/monitoring
+          - aws/finops
+    defaults:
+      run:
+        working-directory: ${{ matrix.layer }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+      - name: Terraform fmt
+        run: terraform fmt -check
+      - name: Terraform init
+        run: terraform init -backend=false
+      - name: Terraform validate
+        run: terraform validate

@@ -1,0 +1,26 @@
+version: 0.1
+
+projects:
+  - path: aws/dns
+    name: kkpp-dns
+  - path: aws/edge-security
+    name: kkpp-edge-security
+  - path: aws/web-edge
+    name: kkpp-web-edge
+  - path: aws/eks
+    name: kkpp-eks
+    terraform_vars:
+      region: ap-northeast-2
+      cluster_name: kkpp-eks
+      vpc_id: vpc-000657d90c7a6085c
+      private_subnet_ids:
+        - subnet-0dc55bbd450ac9f03
+        - subnet-0fa7830f7ccadd210
+      public_subnet_ids: []
+      node_instance_types:
+        - t3.medium
+      desired_size: 3
+      min_size: 2
+      max_size: 4
+  - path: aws/finops
+    name: kkpp-finops

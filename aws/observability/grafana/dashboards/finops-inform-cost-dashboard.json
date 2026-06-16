@@ -1,0 +1,336 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [],
+  "panels": [
+    {
+      "datasource": {
+        "type": "grafana-athena-datasource",
+        "uid": "${DS_ATHENA}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "currencyUSD"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "id": 1,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "orientation": "auto",
+        "showValue": "always",
+        "xField": "component"
+      },
+      "pluginVersion": "10.4.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-athena-datasource",
+            "uid": "${DS_ATHENA}"
+          },
+          "format": 1,
+          "rawSQL": "SELECT coalesce(resource_tags_user_component, 'untagged') AS component, sum(cast(line_item_unblended_cost AS double)) AS cost FROM ${cur_database}.${cur_table} WHERE date(line_item_usage_start_date) >= current_date - interval '30' day AND bill_billing_entity = 'AWS' GROUP BY 1 ORDER BY cost DESC",
+          "refId": "A"
+        }
+      ],
+      "title": "Monthly Cost by Component",
+      "type": "barchart"
+    },
+    {
+      "datasource": {
+        "type": "grafana-athena-datasource",
+        "uid": "${DS_ATHENA}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "mappings": [],
+          "unit": "currencyUSD"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
+      "id": 2,
+      "options": {
+        "displayLabels": [
+          "name",
+          "percent"
+        ],
+        "legend": {
+          "displayMode": "list",
+          "placement": "right",
+          "showLegend": true
+        },
+        "pieType": "pie",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": true
+        }
+      },
+      "pluginVersion": "10.4.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-athena-datasource",
+            "uid": "${DS_ATHENA}"
+          },
+          "format": 1,
+          "rawSQL": "SELECT coalesce(resource_tags_user_service, line_item_product_code, 'unknown') AS service, sum(cast(line_item_unblended_cost AS double)) AS cost FROM ${cur_database}.${cur_table} WHERE date(line_item_usage_start_date) >= current_date - interval '30' day AND bill_billing_entity = 'AWS' GROUP BY 1 ORDER BY cost DESC LIMIT 12",
+          "refId": "A"
+        }
+      ],
+      "title": "Cost Share by Service",
+      "type": "piechart"
+    },
+    {
+      "datasource": {
+        "type": "grafana-athena-datasource",
+        "uid": "${DS_ATHENA}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "mappings": [],
+          "unit": "currencyUSD"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 8,
+        "x": 0,
+        "y": 9
+      },
+      "id": 3,
+      "options": {
+        "displayLabels": [
+          "name",
+          "percent"
+        ],
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "pieType": "donut",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": true
+        }
+      },
+      "pluginVersion": "10.4.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-athena-datasource",
+            "uid": "${DS_ATHENA}"
+          },
+          "format": 1,
+          "rawSQL": "SELECT split_part(line_item_resource_id, '/', 1) AS resource_type, sum(cast(line_item_unblended_cost AS double)) AS cost FROM ${cur_database}.${cur_table} WHERE date(line_item_usage_start_date) >= current_date - interval '30' day AND line_item_resource_id <> '' GROUP BY 1 ORDER BY cost DESC LIMIT 10",
+          "refId": "A"
+        }
+      ],
+      "title": "Cost by Resource Type",
+      "type": "piechart"
+    },
+    {
+      "datasource": {
+        "type": "grafana-athena-datasource",
+        "uid": "${DS_ATHENA}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "cost"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "currencyUSD"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 16,
+        "x": 8,
+        "y": 9
+      },
+      "id": 4,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "10.4.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-athena-datasource",
+            "uid": "${DS_ATHENA}"
+          },
+          "format": 1,
+          "rawSQL": "SELECT coalesce(resource_tags_user_component, 'untagged') AS component, coalesce(resource_tags_user_service, line_item_product_code, 'unknown') AS service, line_item_product_code AS product, line_item_usage_type AS usage_type, line_item_resource_id AS resource_id, sum(cast(line_item_unblended_cost AS double)) AS cost FROM ${cur_database}.${cur_table} WHERE date(line_item_usage_start_date) >= current_date - interval '30' day GROUP BY 1, 2, 3, 4, 5 ORDER BY cost DESC LIMIT 100",
+          "refId": "A"
+        }
+      ],
+      "title": "Cost Detail",
+      "type": "table"
+    }
+  ],
+  "refresh": "1h",
+  "schemaVersion": 39,
+  "tags": [
+    "finops",
+    "aws",
+    "cost"
+  ],
+  "templating": {
+    "list": [
+      {
+        "current": {},
+        "hide": 0,
+        "includeAll": false,
+        "label": "Athena",
+        "multi": false,
+        "name": "DS_ATHENA",
+        "options": [],
+        "query": "grafana-athena-datasource",
+        "refresh": 1,
+        "regex": "",
+        "type": "datasource"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "cost_and_usage_report",
+          "value": "cost_and_usage_report"
+        },
+        "hide": 0,
+        "label": "CUR database",
+        "name": "cur_database",
+        "options": [
+          {
+            "selected": true,
+            "text": "cost_and_usage_report",
+            "value": "cost_and_usage_report"
+          }
+        ],
+        "query": "cost_and_usage_report",
+        "type": "textbox"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "kkpp_cur",
+          "value": "kkpp_cur"
+        },
+        "hide": 0,
+        "label": "CUR table",
+        "name": "cur_table",
+        "options": [
+          {
+            "selected": true,
+            "text": "kkpp_cur",
+            "value": "kkpp_cur"
+          }
+        ],
+        "query": "kkpp_cur",
+        "type": "textbox"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-30d",
+    "to": "now"
+  },
+  "timezone": "browser",
+  "title": "FinOps Inform - AWS Cost",
+  "uid": "finops-inform-aws-cost",
+  "version": 1,
+  "weekStart": ""
+}
