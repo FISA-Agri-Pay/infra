@@ -4,5 +4,6 @@ locals {
     ManagedBy   = "terraform"
     Environment = "shared"
     Service     = "web-edge"
+    Component   = "edge"
   }
 }

@@ -2,8 +2,11 @@ locals {
   subnet_ids = concat(var.private_subnet_ids, var.public_subnet_ids)
 
   common_tags = {
-    Project   = "kkpp"
-    ManagedBy = "terraform"
+    Project     = "kkpp"
+    ManagedBy   = "terraform"
+    Environment = "dev"
+    Service     = "eks"
+    Component   = "compute"
   }
 }
 

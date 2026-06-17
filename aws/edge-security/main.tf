@@ -1,8 +1,10 @@
 locals {
   common_tags = {
-    Project   = "kkpp"
-    ManagedBy = "terraform"
-    Service   = "web-edge"
+    Project     = "kkpp"
+    ManagedBy   = "terraform"
+    Environment = "shared"
+    Service     = "web-edge"
+    Component   = "edge"
   }
 
   # CommonRuleSet sub-rules that false-positive on binary multipart uploads

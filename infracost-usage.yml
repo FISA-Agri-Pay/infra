@@ -1,0 +1,42 @@
+version: 0.1
+
+resource_usage:
+  aws_cloudfront_distribution.web_edge:
+    monthly_data_transfer_to_internet_gb:
+      us: 200
+      europe: 50
+      south_korea: 500
+      other: 50
+    monthly_http_requests:
+      us: 1000000
+      europe: 250000
+      south_korea: 5000000
+      other: 250000
+    monthly_https_requests:
+      us: 4000000
+      europe: 1000000
+      south_korea: 20000000
+      other: 1000000
+
+  aws_lb.admin_api:
+    new_connections: 25
+    active_connections: 200
+    processed_bytes_gb: 500
+    rule_evaluations: 100
+
+  aws_wafv2_web_acl.cloudfront:
+    monthly_requests: 25000000
+
+  'aws_nat_gateway.this["0"]':
+    monthly_data_processed_gb: 500
+
+  'aws_nat_gateway.this["1"]':
+    monthly_data_processed_gb: 500
+
+  aws_db_instance.primary:
+    additional_backup_storage_gb: 100
+    monthly_additional_io_requests: 1000000
+
+  aws_db_instance.dr_standby:
+    additional_backup_storage_gb: 100
+    monthly_additional_io_requests: 500000
