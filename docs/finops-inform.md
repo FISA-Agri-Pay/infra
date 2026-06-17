@@ -28,7 +28,9 @@ governance policy instead of distorting the recorded environment value.
 ## Forecasting
 
 Cost forecasting is based on Terraform records in this repo and is run through
-Infracost. The registered layers are:
+Infracost when an estimate is needed. Infracost is an optional forecast tool for
+this record-only repository, not a merge-blocking deployment gate. The registered
+layers are:
 
 - `aws/dns`
 - `aws/edge-security`
@@ -40,6 +42,27 @@ Infracost. The registered layers are:
 The `aws/finops` layer is not part of this workflow. We do not create CUR S3
 buckets, CUR reports, or Cost Allocation Tag activation resources with
 Terraform.
+
+Some Infracost Cloud Governance policies can conflict with this repo's
+documentation model. For example, `Environment=shared` is intentionally recorded
+for shared edge/network resources, and Graviton or HTTPS-redirect findings are
+tracked separately when they imply real runtime behavior changes. Handle those
+as policy exceptions or separate engineering issues rather than changing record
+values only to satisfy the checker.
+
+Recommended Infracost Cloud Governance changes:
+
+- Allow `Environment` values `dev`, `stage`, `prod`, and `shared`, or add an
+  exception that allows `Environment=shared` when `Component` is `edge`,
+  `network`, `data`, or `observability`.
+- Snooze or dismiss Graviton recommendations for `aws_eks_node_group.default`
+  and RDS placeholders until ARM compatibility is validated.
+- Snooze or dismiss the ALB HTTP to HTTPS redirect recommendation for
+  `aws_lb_listener.admin_api_http`; changing it affects the current internal ALB
+  and CloudFront VPC Origin behavior and should be handled as a separate
+  security design issue.
+- Keep RDS encryption, snapshot tag copy, and PostgreSQL log export checks
+  enabled; the record-only `aws/data` layer documents those settings.
 
 ## Actual-cost bridge
 

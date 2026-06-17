@@ -40,6 +40,12 @@ variable "db_multi_az" {
   default     = false
 }
 
+variable "db_enabled_cloudwatch_logs_exports" {
+  description = "Placeholder RDS log exports for monitoring/auditing. Confirm engine-specific log types in the console."
+  type        = list(string)
+  default     = ["postgresql", "upgrade"]
+}
+
 variable "primary_db_identifier" {
   description = "Recorded primary DB identifier."
   type        = string

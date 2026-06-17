@@ -1,11 +1,7 @@
 name: infracost
 
 on:
-  pull_request:
-    paths:
-      - "aws/**/*.tf"
-      - "infracost.yml"
-      - "infracost-usage.yml"
+  workflow_dispatch:
 
 jobs:
   infracost:
@@ -20,5 +16,3 @@ jobs:
           api-key: ${{ secrets.INFRACOST_API_KEY }}
       - name: Generate Infracost estimate
         run: infracost breakdown --config-file=infracost.yml --usage-file=infracost-usage.yml --format=json --out-file=/tmp/infracost.json
-      - name: Comment monthly cost diff
-        run: infracost comment github --path=/tmp/infracost.json --repo=$GITHUB_REPOSITORY --pull-request=${{ github.event.pull_request.number }} --github-token=${{ github.token }} --behavior=update

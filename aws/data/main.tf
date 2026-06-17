@@ -28,31 +28,36 @@ resource "aws_secretsmanager_secret" "db_credentials" {
 }
 
 resource "aws_db_instance" "primary" {
-  identifier                  = var.primary_db_identifier
-  engine                      = var.db_engine
-  engine_version              = var.db_engine_version
-  instance_class              = var.db_instance_class
-  allocated_storage           = var.db_allocated_storage_gb
-  storage_type                = var.db_storage_type
-  multi_az                    = var.db_multi_az
-  db_subnet_group_name        = var.db_subnet_group_name
-  vpc_security_group_ids      = var.db_security_group_ids
-  username                    = "placeholder_admin"
-  manage_master_user_password = true
-  storage_encrypted           = true
-  kms_key_id                  = aws_kms_key.data.arn
-  skip_final_snapshot         = false
+  identifier                      = var.primary_db_identifier
+  engine                          = var.db_engine
+  engine_version                  = var.db_engine_version
+  instance_class                  = var.db_instance_class
+  allocated_storage               = var.db_allocated_storage_gb
+  storage_type                    = var.db_storage_type
+  multi_az                        = var.db_multi_az
+  db_subnet_group_name            = var.db_subnet_group_name
+  vpc_security_group_ids          = var.db_security_group_ids
+  username                        = "placeholder_admin"
+  manage_master_user_password     = true
+  storage_encrypted               = true
+  kms_key_id                      = aws_kms_key.data.arn
+  copy_tags_to_snapshot           = true
+  enabled_cloudwatch_logs_exports = var.db_enabled_cloudwatch_logs_exports
+  skip_final_snapshot             = false
 
   tags = merge(local.common_tags, { Name = var.primary_db_identifier, Role = "primary" })
 }
 
 resource "aws_db_instance" "dr_standby" {
-  identifier          = var.dr_db_identifier
-  replicate_source_db = aws_db_instance.primary.identifier
-  instance_class      = var.db_instance_class
-  storage_type        = var.db_storage_type
-  multi_az            = false
-  skip_final_snapshot = false
+  identifier            = var.dr_db_identifier
+  replicate_source_db   = aws_db_instance.primary.identifier
+  instance_class        = var.db_instance_class
+  storage_type          = var.db_storage_type
+  storage_encrypted     = true
+  kms_key_id            = aws_kms_key.data.arn
+  multi_az              = false
+  copy_tags_to_snapshot = true
+  skip_final_snapshot   = false
 
   tags = merge(local.common_tags, { Name = var.dr_db_identifier, Role = "dr-standby" })
 }
