@@ -10,8 +10,8 @@ set -euo pipefail
 # This does not create a single VIP. Because the two DB servers are on
 # different subnets, Keepalived/VRRP is not a good default next step here.
 
-WRITE_HOST="${WRITE_HOST:-192.168.100.23}"
-READ_HOST="${READ_HOST:-10.30.4.11}"
+WRITE_HOST="${WRITE_HOST:-192.0.2.23}"
+READ_HOST="${READ_HOST:-198.51.100.11}"
 CONFIG="/etc/haproxy/haproxy.cfg"
 BACKUP="/etc/haproxy/haproxy.cfg.$(date +%Y%m%d%H%M%S).bak"
 

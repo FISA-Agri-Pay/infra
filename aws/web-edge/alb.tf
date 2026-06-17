@@ -10,7 +10,7 @@ resource "aws_security_group" "admin_api_alb" {
 
   ingress = [
     {
-      cidr_blocks      = ["172.20.0.0/16"]
+      cidr_blocks      = ["10.1.0.0/16"]
       description      = "HTTP access to the internal ALB"
       from_port        = 80
       ipv6_cidr_blocks = []
@@ -35,7 +35,7 @@ resource "aws_security_group" "admin_api_alb" {
 
   egress = [
     {
-      cidr_blocks      = ["10.30.2.100/32"]
+      cidr_blocks      = ["203.0.113.100/32"]
       description      = "HTTP to on-premises admin ingress"
       from_port        = 80
       ipv6_cidr_blocks = []
@@ -57,7 +57,7 @@ resource "aws_security_group" "aiops_api_alb" {
 
   ingress = [
     {
-      cidr_blocks      = ["10.30.0.0/16"]
+      cidr_blocks      = ["10.0.0.0/16"]
       description      = "HTTP from on-prem routed network to AIOps internal ALB"
       from_port        = 80
       ipv6_cidr_blocks = []
@@ -68,7 +68,7 @@ resource "aws_security_group" "aiops_api_alb" {
       to_port          = 80
     },
     {
-      cidr_blocks      = ["172.20.0.0/16"]
+      cidr_blocks      = ["10.1.0.0/16"]
       description      = "HTTP access from VPC for validation"
       from_port        = 80
       ipv6_cidr_blocks = []
@@ -79,7 +79,7 @@ resource "aws_security_group" "aiops_api_alb" {
       to_port          = 80
     },
     {
-      cidr_blocks      = ["192.168.100.0/24"]
+      cidr_blocks      = ["192.0.2.0/24"]
       description      = "HTTP from on-prem Kubernetes nodes to AIOps internal ALB"
       from_port        = 80
       ipv6_cidr_blocks = []
@@ -104,7 +104,7 @@ resource "aws_security_group" "aiops_api_alb" {
 
   egress = [
     {
-      cidr_blocks      = ["172.20.0.0/16"]
+      cidr_blocks      = ["10.1.0.0/16"]
       description      = "Outbound traffic to EKS pod and node targets"
       from_port        = 0
       ipv6_cidr_blocks = []
@@ -126,7 +126,7 @@ resource "aws_security_group" "catalog_api_alb" {
 
   ingress = [
     {
-      cidr_blocks      = ["172.20.0.0/16"]
+      cidr_blocks      = ["10.1.0.0/16"]
       description      = "HTTP access from VPC for validation"
       from_port        = 80
       ipv6_cidr_blocks = []
@@ -151,7 +151,7 @@ resource "aws_security_group" "catalog_api_alb" {
 
   egress = [
     {
-      cidr_blocks      = ["172.20.0.0/16"]
+      cidr_blocks      = ["10.1.0.0/16"]
       description      = "Outbound traffic to EKS pod and node targets"
       from_port        = 0
       ipv6_cidr_blocks = []
@@ -208,7 +208,7 @@ resource "aws_lb_target_group" "admin_api" {
 
 resource "aws_lb_target_group_attachment" "admin_api_onprem_ingress" {
   target_group_arn  = aws_lb_target_group.admin_api.arn
-  target_id         = "10.30.2.100"
+  target_id         = "203.0.113.100"
   port              = 80
   availability_zone = "all"
 }

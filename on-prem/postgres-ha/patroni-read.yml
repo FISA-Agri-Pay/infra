@@ -4,11 +4,11 @@ name: postgresql-read
 
 etcd3:
   hosts:
-    - 192.168.100.22:32379
+    - 192.0.2.22:32379
 
 restapi:
   listen: 0.0.0.0:8008
-  connect_address: 10.30.4.11:8008
+  connect_address: 198.51.100.11:8008
 
 bootstrap:
   dcs:
@@ -32,12 +32,12 @@ bootstrap:
     - local all all peer
     - host all all 127.0.0.1/32 scram-sha-256
     - host all all 0.0.0.0/0 scram-sha-256
-    - host replication repl_user 192.168.100.0/24 scram-sha-256
-    - host replication repl_user 10.30.4.0/24 scram-sha-256
+    - host replication repl_user 192.0.2.0/24 scram-sha-256
+    - host replication repl_user 198.51.100.0/24 scram-sha-256
 
 postgresql:
   listen: 0.0.0.0:5432
-  connect_address: 10.30.4.11:5432
+  connect_address: 198.51.100.11:5432
   data_dir: /var/lib/postgresql/16/main
   config_dir: /etc/postgresql/16/main
   bin_dir: /usr/lib/postgresql/16/bin
@@ -45,10 +45,10 @@ postgresql:
   authentication:
     superuser:
       username: postgres
-      password: postgres
+      password: "${PATRONI_SUPERUSER_PASSWORD}"
     replication:
       username: repl_user
-      password: postgres
+      password: "${PATRONI_REPLICATION_PASSWORD}"
   parameters:
     unix_socket_directories: /var/run/postgresql
 

@@ -5,13 +5,13 @@ set -euo pipefail
 # You can override HAPROXY_HOST to test the other HAProxy instance.
 #
 # Example:
-#   HAPROXY_HOST=192.168.100.23 bash patroni-16-check-haproxy-routing.sh
-#   HAPROXY_HOST=10.30.4.11 bash patroni-16-check-haproxy-routing.sh
+#   HAPROXY_HOST=192.0.2.23 bash patroni-16-check-haproxy-routing.sh
+#   HAPROXY_HOST=198.51.100.11 bash patroni-16-check-haproxy-routing.sh
 
 HAPROXY_HOST="${HAPROXY_HOST:-127.0.0.1}"
 DB_NAME="${DB_NAME:-postgres}"
 DB_USER="${DB_USER:-postgres}"
-DB_PASSWORD="${DB_PASSWORD:-postgres}"
+: "${DB_PASSWORD:?Set DB_PASSWORD before running this check.}"
 
 export PGPASSWORD="${DB_PASSWORD}"
 

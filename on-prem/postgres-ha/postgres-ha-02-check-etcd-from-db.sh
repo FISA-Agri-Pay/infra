@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ETCD_HOST="${ETCD_HOST:-192.168.100.22}"
+ETCD_HOST="${ETCD_HOST:-192.0.2.22}"
 ETCD_PORT="${ETCD_PORT:-32379}"
 ETCD_URL="http://${ETCD_HOST}:${ETCD_PORT}"
 

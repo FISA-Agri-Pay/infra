@@ -11,7 +11,7 @@ these placeholders as an operational rollout plan.
 Known values:
 
 - Region: `ap-northeast-2`
-- VPC CIDR: `172.16.0.0/20`
+- VPC CIDR: `10.0.0.0/20`
 - Component tag: `network`
 
 Values that must be confirmed in the AWS console before this record is trusted:

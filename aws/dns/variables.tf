@@ -1,5 +1,5 @@
 variable "domain_name" {
-  description = "Apex domain for the Route 53 hosted zone (e.g. kongkongpatpat.shop)."
+  description = "Apex domain for the Route 53 hosted zone (e.g. example.com)."
   type        = string
 }
 

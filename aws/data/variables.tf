@@ -85,11 +85,11 @@ variable "dms_allocated_storage_gb" {
 variable "dms_source_endpoint_arn" {
   description = "Existing DMS source endpoint ARN placeholder. Replace with console value."
   type        = string
-  default     = "arn:aws:dms:ap-northeast-2:153585581837:endpoint:AAAAAAAAAAAAAAAAAAAAAA"
+  default     = "arn:aws:dms:ap-northeast-2:000000000000:endpoint:EXAMPLE_SOURCE_ENDPOINT"
 }
 
 variable "dms_target_endpoint_arn" {
   description = "Existing DMS target endpoint ARN placeholder. Replace with console value."
   type        = string
-  default     = "arn:aws:dms:ap-northeast-2:153585581837:endpoint:BBBBBBBBBBBBBBBBBBBBBB"
+  default     = "arn:aws:dms:ap-northeast-2:000000000000:endpoint:EXAMPLE_TARGET_ENDPOINT"
 }

@@ -1,5 +1,5 @@
 variable "domain_name" {
-  description = "Primary domain for the ACM certificate (e.g. kongkongpatpat.shop)."
+  description = "Primary domain for the ACM certificate (e.g. example.com)."
   type        = string
 }
 

@@ -7,7 +7,7 @@ variable "region" {
 variable "vpc_cidr" {
   description = "Recorded VPC CIDR from the console."
   type        = string
-  default     = "172.16.0.0/20"
+  default     = "10.0.0.0/20"
 }
 
 variable "availability_zones" {
@@ -19,13 +19,13 @@ variable "availability_zones" {
 variable "public_subnet_cidrs" {
   description = "Placeholder public subnet CIDRs. Replace with console values before trusting subnet documentation."
   type        = list(string)
-  default     = ["172.16.0.0/24", "172.16.1.0/24"]
+  default     = ["10.0.0.0/24", "10.0.1.0/24"]
 }
 
 variable "private_subnet_cidrs" {
   description = "Placeholder private subnet CIDRs. Replace with console values before trusting subnet documentation."
   type        = list(string)
-  default     = ["172.16.10.0/24", "172.16.11.0/24"]
+  default     = ["10.0.10.0/24", "10.0.11.0/24"]
 }
 
 variable "nat_eip_allocation_ids" {

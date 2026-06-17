@@ -4,7 +4,7 @@ output "hosted_zone_id" {
 }
 
 output "name_servers" {
-  description = "Set these NS records at the kongkongpatpat.shop registrar."
+  description = "Set these NS records at the example.com registrar."
   value       = aws_route53_zone.this.name_servers
 }
 

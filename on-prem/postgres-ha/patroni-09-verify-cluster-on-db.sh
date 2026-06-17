@@ -4,8 +4,8 @@ set -euo pipefail
 # Run on either DB server after both Patroni nodes are started.
 
 CONFIG="${CONFIG:-/etc/patroni/patroni.yml}"
-PRIMARY_REST="${PRIMARY_REST:-http://192.168.100.23:8008}"
-REPLICA_REST="${REPLICA_REST:-http://10.30.4.11:8008}"
+PRIMARY_REST="${PRIMARY_REST:-http://192.0.2.23:8008}"
+REPLICA_REST="${REPLICA_REST:-http://198.51.100.11:8008}"
 
 echo "[1/7] Host information"
 hostname

@@ -36,10 +36,10 @@ cat >> "${HBA_FILE}" <<'EOF_MARKER'
 # Patroni replication rules
 EOF_MARKER
 
-add_line "host    replication     repl_user       192.168.100.23/32       scram-sha-256"
-add_line "host    replication     repl_user       10.30.4.11/32           scram-sha-256"
-add_line "host    replication     repl_user       192.168.100.0/24        scram-sha-256"
-add_line "host    replication     repl_user       10.30.4.0/24            scram-sha-256"
+add_line "host    replication     repl_user       192.0.2.23/32       scram-sha-256"
+add_line "host    replication     repl_user       198.51.100.11/32           scram-sha-256"
+add_line "host    replication     repl_user       192.0.2.0/24        scram-sha-256"
+add_line "host    replication     repl_user       198.51.100.0/24            scram-sha-256"
 
 chown postgres:postgres "${HBA_FILE}"
 chmod 0640 "${HBA_FILE}"

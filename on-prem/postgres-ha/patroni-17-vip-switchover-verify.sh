@@ -9,10 +9,10 @@ set -euo pipefail
 
 CONFIG="${CONFIG:-/etc/patroni/patroni.yml}"
 CLUSTER="${CLUSTER:-pg-cluster}"
-VIP="${VIP:-192.168.100.12}"
+VIP="${VIP:-192.0.2.12}"
 DB_NAME="${DB_NAME:-postgres}"
 DB_USER="${DB_USER:-postgres}"
-DB_PASSWORD="${DB_PASSWORD:-postgres}"
+: "${DB_PASSWORD:?Set DB_PASSWORD before running this verification.}"
 
 export PGPASSWORD="${DB_PASSWORD}"
 

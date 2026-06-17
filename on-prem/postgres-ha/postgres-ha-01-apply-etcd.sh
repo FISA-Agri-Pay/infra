@@ -28,4 +28,4 @@ kubectl -n "${NAMESPACE}" exec "statefulset/${STATEFULSET}" -- \
 echo
 echo "Done."
 echo "Use this etcd endpoint from PostgreSQL servers:"
-echo "  http://192.168.100.22:32379"
+echo "  http://192.0.2.22:32379"
