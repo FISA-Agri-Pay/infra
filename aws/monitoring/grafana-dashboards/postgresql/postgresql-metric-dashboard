@@ -1052,15 +1052,15 @@
           {
             "selected": false,
             "text": "postgresql-write",
-            "value": "192.168.100.23"
+            "value": "192.0.2.23"
           },
           {
             "selected": false,
             "text": "postgresql-read",
-            "value": "10.30.4.11"
+            "value": "198.51.100.11"
           }
         ],
-        "query": "전체 : .*, postgresql-write : 192.168.100.23, postgresql-read : 10.30.4.11",
+        "query": "전체 : .*, postgresql-write : 192.0.2.23, postgresql-read : 198.51.100.11",
         "type": "custom"
       }
     ]

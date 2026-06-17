@@ -33,7 +33,7 @@ spec:
             - --name=patroni-etcd-0
             - --data-dir=/var/lib/etcd
             - --listen-client-urls=http://0.0.0.0:2379
-            - --advertise-client-urls=http://192.168.100.22:32379
+            - --advertise-client-urls=http://192.0.2.22:32379
             - --listen-peer-urls=http://127.0.0.1:2380
             - --initial-advertise-peer-urls=http://127.0.0.1:2380
             - --initial-cluster=patroni-etcd-0=http://127.0.0.1:2380

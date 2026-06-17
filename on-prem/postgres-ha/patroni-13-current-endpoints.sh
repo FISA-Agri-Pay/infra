@@ -5,8 +5,8 @@ set -euo pipefail
 # Prints the current write/read endpoints based on Patroni state.
 
 CONFIG="${CONFIG:-/etc/patroni/patroni.yml}"
-WRITE_HOST="${WRITE_HOST:-192.168.100.23}"
-READ_HOST="${READ_HOST:-10.30.4.11}"
+WRITE_HOST="${WRITE_HOST:-192.0.2.23}"
+READ_HOST="${READ_HOST:-198.51.100.11}"
 WRITE_NODE="${WRITE_NODE:-postgresql-write}"
 READ_NODE="${READ_NODE:-postgresql-read}"
 

@@ -123,7 +123,7 @@ locals {
   cache_s3  = "658327ea-f89d-4fab-a63d-7e88639e58f6" # CachingOptimized
   orp_api   = "b689b0a8-53d0-40ab-baf2-68738e2966ac" # AllViewer
 
-  aiops_prefix_rewrite_arn = "arn:aws:cloudfront::153585581837:function/kkpp-web-edge-aiops-prefix-rewrite"
+  aiops_prefix_rewrite_arn = "arn:aws:cloudfront::000000000000:function/example-web-edge-aiops-prefix-rewrite"
 
   ordered_behaviors = [
     { path = "/api/v1/aiops*", origin = "aiops-api-alb", allowed = local.api_allowed, cached = local.api_cached, cache = local.cache_api, orp = local.orp_api, compress = false, func = local.aiops_prefix_rewrite_arn },
@@ -199,7 +199,7 @@ resource "aws_cloudfront_distribution" "web_edge" {
   # VPC (ALB) origins
   origin {
     origin_id   = "aiops-api-alb"
-    domain_name = "internal-kkpp-aiops-api-2040461357.ap-northeast-2.elb.amazonaws.com"
+    domain_name = "internal-example-aiops-api-0000000000.ap-northeast-2.elb.amazonaws.com"
 
     vpc_origin_config {
       vpc_origin_id            = aws_cloudfront_vpc_origin.aiops_api_alb.id
@@ -210,7 +210,7 @@ resource "aws_cloudfront_distribution" "web_edge" {
 
   origin {
     origin_id   = "catalog-api-alb"
-    domain_name = "internal-kkpp-service-catalog-api-1951973105.ap-northeast-2.elb.amazonaws.com"
+    domain_name = "internal-example-service-catalog-api-0000000000.ap-northeast-2.elb.amazonaws.com"
 
     vpc_origin_config {
       vpc_origin_id            = aws_cloudfront_vpc_origin.catalog_api_alb.id

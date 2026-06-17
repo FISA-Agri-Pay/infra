@@ -5,7 +5,7 @@ set -euo pipefail
 # This script does not start Patroni and does not stop PostgreSQL.
 
 CONFIG="${CONFIG:-/etc/patroni/patroni.yml}"
-ETCD_URL="${ETCD_URL:-http://192.168.100.22:32379}"
+ETCD_URL="${ETCD_URL:-http://192.0.2.22:32379}"
 
 echo "[1/8] Host information"
 hostname

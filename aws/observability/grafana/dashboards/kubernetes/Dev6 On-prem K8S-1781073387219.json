@@ -2831,8 +2831,8 @@
       },
       {
         "current": {
-          "text": "10.30.2.51:9100",
-          "value": "10.30.2.51:9100"
+          "text": "203.0.113.51:9100",
+          "value": "203.0.113.51:9100"
         },
         "datasource": "Onprem Prometheus",
         "definition": "query_result(node_uname_info{nodename=\"$node\"})",

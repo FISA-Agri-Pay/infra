@@ -7,9 +7,9 @@ set -u
 CONFIG="${CONFIG:-/etc/patroni/patroni.yml}"
 DB_NAME="${DB_NAME:-postgres}"
 DB_USER="${DB_USER:-postgres}"
-DB_PASSWORD="${DB_PASSWORD:-postgres}"
-WRITE_HOST="${WRITE_HOST:-192.168.100.23}"
-READ_HOST="${READ_HOST:-10.30.4.11}"
+: "${DB_PASSWORD:?Set DB_PASSWORD before running this diagnostic.}"
+WRITE_HOST="${WRITE_HOST:-192.0.2.23}"
+READ_HOST="${READ_HOST:-198.51.100.11}"
 
 export PGPASSWORD="${DB_PASSWORD}"
 

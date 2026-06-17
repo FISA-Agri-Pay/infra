@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Run SECOND on the current replica/read DB server: 10.30.4.11
+# Run SECOND on the current replica/read DB server: 198.51.100.11
 # This stops the Debian PostgreSQL instance service and starts Patroni.
 
 CONFIG="${CONFIG:-/etc/patroni/patroni.yml}"
-ETCD_URL="${ETCD_URL:-http://192.168.100.22:32379}"
-PRIMARY_REST="${PRIMARY_REST:-http://192.168.100.23:8008}"
+ETCD_URL="${ETCD_URL:-http://192.0.2.22:32379}"
+PRIMARY_REST="${PRIMARY_REST:-http://192.0.2.23:8008}"
 
 if [[ "${EUID}" -ne 0 ]]; then
   echo "Run with sudo/root."

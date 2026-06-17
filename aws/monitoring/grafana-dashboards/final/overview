@@ -66,7 +66,7 @@
         "type": "prometheus",
         "uid": "onprem-prometheus"
       },
-      "description": "node-exporter 대상(K8s 노드 + DB VM)과 pfSense Telegraf 대상(Active/Standby)을 한 테이블에 표시. 192.168.100.10은 pfsense-active, 192.168.100.11은 pfsense-standby로 표시.",
+      "description": "node-exporter 대상(K8s 노드 + DB VM)과 pfSense Telegraf 대상(Active/Standby)을 한 테이블에 표시. 192.0.2.10은 pfsense-active, 192.0.2.11은 pfsense-standby로 표시.",
       "fieldConfig": {
         "defaults": {
           "custom": {

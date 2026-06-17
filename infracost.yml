@@ -9,22 +9,22 @@ projects:
     name: kkpp-web-edge
     terraform_vars:
       aliases:
-        - kongkongpatpat.shop
-        - www.kongkongpatpat.shop
-      acm_certificate_arn: arn:aws:acm:us-east-1:153585581837:certificate/c975fa46-fc79-4e0e-8d13-0b28732687da
-      web_acl_arn: arn:aws:wafv2:us-east-1:153585581837:global/webacl/kkpp-web-edge-cloudfront/23b60039-a0f2-423f-8ee0-7a3a532d1104
+        - example.com
+        - www.example.com
+      acm_certificate_arn: arn:aws:acm:us-east-1:000000000000:certificate/00000000-0000-0000-0000-000000000000
+      web_acl_arn: arn:aws:wafv2:us-east-1:000000000000:global/webacl/example-web-edge-cloudfront/00000000-0000-0000-0000-000000000000
   - path: aws/eks
     name: kkpp-eks
     terraform_vars:
       region: ap-northeast-2
       cluster_name: kkpp-eks
-      vpc_id: vpc-000657d90c7a6085c
+      vpc_id: vpc-00000000000000000
       private_subnet_ids:
-        - subnet-0dc55bbd450ac9f03
-        - subnet-0fa7830f7ccadd210
+        - subnet-00000000000000000
+        - subnet-11111111111111111
       public_subnet_ids:
-        - subnet-03013291a3e7fdc4d
-        - subnet-0d4cd583e3ad6ef54
+        - subnet-22222222222222222
+        - subnet-33333333333333333
       node_instance_types:
         - t3.medium
       desired_size: 2
@@ -34,6 +34,6 @@ projects:
     name: kkpp-networking
     terraform_vars:
       region: ap-northeast-2
-      vpc_cidr: 172.16.0.0/20
+      vpc_cidr: 10.0.0.0/20
   - path: aws/data
     name: kkpp-data

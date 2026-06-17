@@ -655,7 +655,7 @@
             "uid": "${DS_LOKI}"
           },
           "expr": "sum(count_over_time({job=\"pfsense\"} |= \"filterlog\" |= \"match,block\" != \"255.255.255.255\" != \"224.\" != \"0.0.0.0\" |= \"vmx1\"[5m])) or vector(0)",
-          "legendFormat": "LAN/관리망(192.168.100.x)",
+          "legendFormat": "LAN/관리망(192.0.2.x)",
           "refId": "A"
         },
         {
@@ -664,7 +664,7 @@
             "uid": "${DS_LOKI}"
           },
           "expr": "sum(count_over_time({job=\"pfsense\"} |= \"filterlog\" |= \"match,block\" != \"255.255.255.255\" != \"224.\" != \"0.0.0.0\" |= \"vmx0.302\"[5m])) or vector(0)",
-          "legendFormat": "K8S VLAN(10.30.2.x)",
+          "legendFormat": "K8S VLAN(203.0.113.x)",
           "refId": "B"
         },
         {
@@ -673,7 +673,7 @@
             "uid": "${DS_LOKI}"
           },
           "expr": "sum(count_over_time({job=\"pfsense\"} |= \"filterlog\" |= \"match,block\" != \"255.255.255.255\" != \"224.\" != \"0.0.0.0\" |= \"vmx0.304\"[5m])) or vector(0)",
-          "legendFormat": "DB VLAN(10.30.4.x)",
+          "legendFormat": "DB VLAN(198.51.100.x)",
           "refId": "C"
         },
         {
@@ -1189,7 +1189,7 @@
         "type": "loki",
         "uid": "${DS_LOKI}"
       },
-      "description": "AWS VPC 172.20.0.0/16 또는 enc0 경유 로그",
+      "description": "AWS VPC 10.1.0.0/16 또는 enc0 경유 로그",
       "fieldConfig": {
         "defaults": {},
         "overrides": []
