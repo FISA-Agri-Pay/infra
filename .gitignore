@@ -24,3 +24,7 @@ crash.*.log
 
 # Logs
 *.log
+
+# FinOps local AWS discovery/config
+scripts/finops/discovered-resources.json
+scripts/finops/resources.json
