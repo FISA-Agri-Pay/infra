@@ -7,6 +7,12 @@ projects:
     name: kkpp-edge-security
   - path: aws/web-edge
     name: kkpp-web-edge
+    terraform_vars:
+      aliases:
+        - kongkongpatpat.shop
+        - www.kongkongpatpat.shop
+      acm_certificate_arn: arn:aws:acm:us-east-1:153585581837:certificate/c975fa46-fc79-4e0e-8d13-0b28732687da
+      web_acl_arn: arn:aws:wafv2:us-east-1:153585581837:global/webacl/kkpp-web-edge-cloudfront/23b60039-a0f2-423f-8ee0-7a3a532d1104
   - path: aws/eks
     name: kkpp-eks
     terraform_vars:
@@ -16,11 +22,18 @@ projects:
       private_subnet_ids:
         - subnet-0dc55bbd450ac9f03
         - subnet-0fa7830f7ccadd210
-      public_subnet_ids: []
+      public_subnet_ids:
+        - subnet-03013291a3e7fdc4d
+        - subnet-0d4cd583e3ad6ef54
       node_instance_types:
         - t3.medium
-      desired_size: 3
-      min_size: 2
-      max_size: 4
-  - path: aws/finops
-    name: kkpp-finops
+      desired_size: 2
+      min_size: 1
+      max_size: 3
+  - path: aws/networking
+    name: kkpp-networking
+    terraform_vars:
+      region: ap-northeast-2
+      vpc_cidr: 172.16.0.0/20
+  - path: aws/data
+    name: kkpp-data

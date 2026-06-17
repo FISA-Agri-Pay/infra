@@ -105,6 +105,8 @@ resource "aws_cloudfront_vpc_origin" "catalog_api_alb" {
       quantity = 1
     }
   }
+
+  tags = merge(local.common_tags, { Name = "kkpp-web-edge-service-catalog-api-alb" })
 }
 
 # ---------------------------------------------------------------------------

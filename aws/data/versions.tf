@@ -10,7 +10,7 @@ terraform {
 
   backend "s3" {
     bucket         = "kkpp-aws-terraform-state"
-    key            = "finops/terraform.tfstate"
+    key            = "data/terraform.tfstate"
     region         = "ap-northeast-2"
     encrypt        = true
     dynamodb_table = "kkpp-terraform-locks"
@@ -19,9 +19,4 @@ terraform {
 
 provider "aws" {
   region = var.region
-}
-
-provider "aws" {
-  alias  = "billing"
-  region = "us-east-1"
 }

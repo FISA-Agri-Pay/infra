@@ -4,6 +4,8 @@ on:
   pull_request:
     paths:
       - "aws/**/*.tf"
+      - "infracost.yml"
+      - "infracost-usage.yml"
       - ".github/workflows/terraform-ci.yml"
 
 jobs:
@@ -18,7 +20,8 @@ jobs:
           - aws/web-edge
           - aws/eks
           - aws/monitoring
-          - aws/finops
+          - aws/networking
+          - aws/data
     defaults:
       run:
         working-directory: ${{ matrix.layer }}

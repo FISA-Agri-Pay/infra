@@ -35,7 +35,8 @@ locals {
 }
 
 # ---------------------------------------------------------------------------
-# Hosted zone. After apply, set these name servers at the .shop registrar.
+# Hosted zone record. Registrar name-server changes are performed manually in
+# the console; do not apply this repo against production.
 # ---------------------------------------------------------------------------
 resource "aws_route53_zone" "this" {
   name = var.domain_name

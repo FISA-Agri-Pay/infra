@@ -4,20 +4,9 @@ locals {
   common_tags = {
     Project     = "kkpp"
     ManagedBy   = "terraform"
-    Environment = "shared"
+    Environment = "dev"
     Service     = "eks"
     Component   = "compute"
-  }
-
-  node_group_asg_tags = {
-    for pair in setproduct(
-      [for asg in aws_eks_node_group.default.resources[0].autoscaling_groups : asg.name],
-      keys(local.common_tags)
-      ) : "${pair[0]}:${pair[1]}" => {
-      asg_name = pair[0]
-      key      = pair[1]
-      value    = local.common_tags[pair[1]]
-    }
   }
 }
 
@@ -153,18 +142,6 @@ resource "aws_eks_node_group" "default" {
   ]
 
   tags = local.common_tags
-}
-
-resource "aws_autoscaling_group_tag" "node_group_common" {
-  for_each = local.node_group_asg_tags
-
-  autoscaling_group_name = each.value.asg_name
-
-  tag {
-    key                 = each.value.key
-    value               = each.value.value
-    propagate_at_launch = true
-  }
 }
 
 resource "aws_eks_addon" "vpc_cni" {
