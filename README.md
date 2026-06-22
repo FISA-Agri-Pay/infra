@@ -20,7 +20,8 @@ infra/
 │  ├─ storage/
 │  ├─ ecr/
 │  ├─ messaging/
-│  └─ alerting/
+│  ├─ alerting/
+│  └─ bastion/
 ├─ vessl-ai/
 │  └─ vllm/
 ├─ on-prem/

@@ -42,3 +42,15 @@ variable "max_size" {
   description = "Maximum number of EKS worker nodes."
   type        = number
 }
+
+variable "account_id" {
+  description = "AWS account ID used to compose IAM policy ARNs for IRSA roles. Templated placeholder."
+  type        = string
+  default     = "000000000000"
+}
+
+variable "oidc_thumbprint" {
+  description = "Root CA thumbprint for the cluster OIDC provider. Templated placeholder; the real value is fetched from the issuer's TLS cert."
+  type        = string
+  default     = "0000000000000000000000000000000000000000"
+}
