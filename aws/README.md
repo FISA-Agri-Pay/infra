@@ -15,7 +15,8 @@ AWS infrastructure configuration for EKS, MSK, networking, and monitoring.
 - `storage/`: S3 buckets
 - `ecr/`: container image registries
 - `messaging/`: SQS queues
-- `alerting/`: CloudWatch → SNS → Lambda → Slack alert stack
+- `alerting/`: CloudWatch alarms + SNS → Lambda → Slack alert stack
+- `bastion/`: RDS bastion (jump) host
 
 > All AWS layers are **record-only** Terraform: documentation and Infracost
 > input for console-created resources. Do not `apply` or `import` them.
