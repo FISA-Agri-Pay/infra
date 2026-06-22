@@ -19,12 +19,40 @@ resource "aws_kms_key" "data" {
   tags = merge(local.common_tags, { Name = "kkpp-data-kms" })
 }
 
+resource "aws_kms_alias" "data" {
+  name          = "alias/kkpp-db-dr-rds"
+  target_key_id = aws_kms_key.data.key_id
+}
+
+# Customer-managed key for the secure credit document S3 bucket
+# (aws/storage: kkpp-secure-credit-docs-bucket).
+resource "aws_kms_key" "document" {
+  description             = "Record of the secure-document KMS key"
+  deletion_window_in_days = 30
+  enable_key_rotation     = true
+
+  tags = merge(local.common_tags, { Name = "kkpp-document-kms-key" })
+}
+
+resource "aws_kms_alias" "document" {
+  name          = "alias/kkpp-document-kms-key"
+  target_key_id = aws_kms_key.document.key_id
+}
+
 resource "aws_secretsmanager_secret" "db_credentials" {
   name        = "kkpp/data/db-credentials"
   description = "Record of the DB credentials secret; no secret value is stored in this repo."
   kms_key_id  = aws_kms_key.data.arn
 
   tags = merge(local.common_tags, { Name = "kkpp-data-db-credentials" })
+}
+
+# DMS source-endpoint credentials for the on-prem -> AWS replication.
+resource "aws_secretsmanager_secret" "dms_onprem_source" {
+  name        = "kkpp/db-dr/onprem-source-dms-replication"
+  description = "Record of the on-prem DMS source credentials; no secret value is stored in this repo."
+
+  tags = merge(local.common_tags, { Name = "kkpp-db-dr-onprem-source-dms" })
 }
 
 resource "aws_db_instance" "primary" {

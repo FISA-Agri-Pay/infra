@@ -12,7 +12,15 @@ infra/
 │  ├─ eks/
 │  ├─ msk/
 │  ├─ networking/
-│  └─ monitoring/
+│  ├─ monitoring/
+│  ├─ data/
+│  ├─ dns/
+│  ├─ edge-security/
+│  ├─ web-edge/
+│  ├─ storage/
+│  ├─ ecr/
+│  ├─ messaging/
+│  └─ alerting/
 ├─ vessl-ai/
 │  └─ vllm/
 ├─ on-prem/
