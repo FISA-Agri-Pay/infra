@@ -545,17 +545,15 @@ GPU는 VESSL AI에서 임대하고, vLLM server와 MCP server를 분리했습니
 - 모델 serving 장애가 backend tool 권한 체계로 번지는 것을 줄입니다.
 - LLM Agent가 실제 서비스 API를 호출할 때 MCP 계층에서 도구 범위를 제한할 수 있습니다.
 
-### VESSL AI 모니터링
+
+### VESSL AI 토큰/GPU 사용량 모니터링
 
 VESSL AI에서 vLLM 기반 LLM serving을 운영하면서 토큰 사용량과 GPU 사용량을 함께
 확인했습니다. 이를 통해 단순히 모델 endpoint를 띄우는 것뿐 아니라, 추론 요청이
 들어올 때 GPU resource와 token throughput이 어떻게 변하는지 관측할 수 있도록
 했습니다.
 
-> 시연 영상은 GitHub Issue/PR comment에 업로드한 뒤 생성되는
-> `https://github.com/user-attachments/assets/...` URL로 연결합니다.
-
-[VESSL AI 토큰/GPU 사용량 모니터링 시연 영상](TODO: GitHub user-attachments URL)
+[시연 영상 보기](https://github.com/user-attachments/assets/376732c4-6e87-44b5-bf56-e5ee5d8f474d)
 
 모니터링 관점은 다음과 같습니다.
 
