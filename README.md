@@ -495,61 +495,102 @@ pfSense를 Active/Standby 구조로 구성하고, VLAN 300~304의 gateway를 CAR
 
 ## 3.4. PostgreSQL 이중화와 장애 전환
 
-> 담당자 작성 예정
+### 1. 개요 및 목표
 
-### 작성 가이드
+기존 단일 PostgreSQL 환경이 지닌 단일 장애점(SPOF) 문제를 해결하는 것을 주된 목표로 삼았습니다. 데이터 유실이나 구조적 파괴 없이 기존 데이터를 안전하게 인수하여, 장애 발생 시 관리자의 개입 없이 자동으로 장애조치(Failover)를 수행하고 애플리케이션 접속 경로를 동적으로 라우팅하는 무중단 고가용성 아키텍처를 성공적으로 구축했습니다.
 
-아래 항목을 채워 넣으면 됩니다.
+### 2. 핵심 아키텍처 및 구성 요소
 
-| 항목 | 내용 |
-| :--- | :--- |
-| 구성 목적 | TODO |
-| primary/replica 구성 | TODO |
-| replication 방식 | TODO |
-| failover 방식 | TODO |
-| Patroni / etcd 사용 여부 | TODO |
-| HAProxy / VIP routing | TODO |
-| backup / restore 정책 | TODO |
-| 장애 전환 테스트 결과 | TODO |
-| 운영 확인 방법 | TODO |
+| **기술 스택** | **시스템 내 주요 역할** |
+| --- | --- |
+| **PostgreSQL 16** | 실제 데이터를 저장하고 처리하는 주력 데이터베이스 (Primary / Replica 구성) |
+| **Patroni** | PostgreSQL 외부에서 프로세스를 모니터링하며 리더 선출 및 자동 Failover를 수행 |
+| **etcd (on Kubernetes)** | Patroni가 리더 상태 및 클러스터 메타데이터를 저장하는 분산 설정 저장소(DCS) |
+| **pfSense HAProxy & VIP** | 클라이언트 트래픽을 받아 현재 활성화된 Primary 또는 Replica로 동적 라우팅 (L7 방식) |
 
-### 운영 흐름
+### 3. 핵심 기술 스택 상세 분석
 
+#### 3.1 Patroni (PostgreSQL HA 오케스트레이터)
+
+- **역할:** 데이터베이스 외부에서 독립적으로 실행되며, 분산 설정 저장소(DCS)와 통신하여 리더를 선출하고 리더 장애 시 복제본을 새 리더로 승격시키는 조율자 역할을 합니다.
+- **REST API 상태 제공:** 8008 포트를 통해 상태를 개방하며, `/primary` 또는 `/replica` 경로로 호출했을 때 자신이 해당 역할이 맞으면 HTTP 200, 아니면 HTTP 503을 반환하여 외부 로드밸런서가 상태를 인지할 수 있도록 합니다.
+
+#### 3.2 etcd (분산 설정 저장소 - DCS)
+
+- **역할:** 클러스터 구성원들이 '현재 누가 진짜 Primary인가'에 대해 합의할 수 있도록 '단일 진실 원천(Single Source of Truth)' 공간을 제공합니다.
+- **스플릿 브레인(Split-Brain) 원천 차단:** 네트워크 단절 시 양쪽 DB가 서로 자신이 리더라고 주장하여 데이터가 양갈래로 쪼개지는 현상을 방지합니다. etcd의 '리더 잠금(Leader Lock)'을 획득한 단 하나의 노드만 쓰기 작업을 수행할 수 있습니다.
+- **분산 합의와 홀수 구성:** Raft 알고리즘 기반으로 동작하여 과반수의 동의가 필요하므로, 결함 허용성(Fault Tolerance)을 확보하기 위해 노드는 최소 3개 이상의 홀수로 구성하는 것이 표준입니다.
+
+#### 3.3 HAProxy 및 VIP (네트워크 트래픽 라우팅)
+
+- **VIP(가상 IP)의 본질:** 특정 물리 서버에 종속되지 않고 시스템 상태에 따라 동적으로 이동하는 논리적 주소(`192.168.100.12(이중화 pfSense의 CARP VIP)`)입니다. DB 서버가 교체되어도 애플리케이션은 IP를 변경할 필요가 없습니다.
+- **포트 기반의 논리적 역할 분리:** 물리적 장비 구분이 아닌 논리적 기능 구분을 위해 포트를 나눕니다. 5432 포트는 쓰기(Write) 전용 채널, 5433 포트는 읽기(Read) 전용 채널로 매핑하여 HAProxy가 각 역할에 맞는 정상 서버로 패킷을 중계합니다.
+
+### 4. 현재 아키텍처의 한계 및 향후 과제
+
+- **etcd 단일 노드 구성 극복**
+    
+    현재 자원 제약 여건상 DCS 인프라인 etcd가 단일 Pod(SPOF) 구조로 동작하고 있어 잠재적 가용성 위협이 존재합니다. 향후 3 Node 이상의 분산 아키텍처로 확장하여 진정한 무장애 환경을 고도화할 계획입니다.
+
+### 5. PostgreSQL 이중화 구조 정리
+
+#### 5.1 Patroni 상태 확인
+
+```bash
+sudo patronictl -c /etc/patroni/patroni.yml list
+```
+
+**실행 결과 예시:**
 ```text
-Client / Service
-  -> TODO endpoint
-     -> TODO primary
-     -> TODO replica
-
-Failure occurs
-  -> TODO detection
-  -> TODO promotion
-  -> TODO endpoint switch
++ Cluster: pg-cluster (7234567890) -----+---------+----------------------+
+| Member         | Host             | Role    | State   | TL | Lag in MB |
++----------------+------------------+---------+---------+----+-----------+
+| postgres-write | 192.168.100.23   | Leader  | running |  1 |         0 |
+| postgres-read  | 10.30.4.11       | Replica | running |  1 |         0 |
++----------------+------------------+---------+---------+----+-----------+
 ```
 
-### 스크린샷 첨부 권장 항목
+- Leader:
+    - 현재 Primary DB
+    - 읽기/쓰기 모두 가능
+    - 내용을 Replica DB로 실시간 복제합니다(비동기)
+- Replica:
+    - 현재 Replica DB
+    - 읽기만 가능하며, SELECT 이외의 쿼리는 제한됩니다.
+    - Primary로부터 실시간으로 데이터를 복제 받습니다.
 
-PostgreSQL 이중화는 장애 전환 결과와 replication 상태가 보이는 화면을 첨부하면
-단순 설명보다 훨씬 강하게 전달됩니다.
+#### 5.2 Patroni 상태 기록원 - K8S `etcd` Pod 형태로 deploy됨
 
-| 파일명 예시 | 첨부하면 좋은 화면 | 보여줄 수 있는 내용 |
-| :--- | :--- | :--- |
-| `docs/images/postgres-patroni-cluster.png` | `patronictl list` 결과 | primary/replica 상태와 leader 확인 |
-| `docs/images/postgres-replication-status.png` | replication status query | replica 지연, streaming 상태 |
-| `docs/images/postgres-haproxy-stats.png` | HAProxy stats page | write/read endpoint routing 상태 |
-| `docs/images/postgres-switchover-test.png` | switchover test 결과 | 장애 전환 후 새 primary 승격 |
-| `docs/images/postgres-grafana-dashboard.png` | PostgreSQL Grafana dashboard | DB resource, connection, query 상태 |
+```bash
+# kubectl get all -n postgres-ha 명령 입력하면 확인 가능
+NAME                 READY   STATUS    RESTARTS      AGE   IP            NODE                 NOMINATED NODE   READINESS GATES
+pod/patroni-etcd-0   1/1     Running   1 (30h ago)   8d    10.244.3.28   k8s-worker-ai-node   <none>           <none>
 
-```markdown
-<!-- 이미지 추가 후 예시 -->
-<div align="center">
-  <img src="docs/images/postgres-patroni-cluster.png" width="80%" />
-</div>
+NAME                   TYPE       CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE   SELECTOR
+service/patroni-etcd   NodePort   10.250.106.54   <none>        2379:32379/TCP   8d    app=patroni-etcd
+
+NAME                            READY   AGE   CONTAINERS   IMAGES
+statefulset.apps/patroni-etcd   1/1     8d    etcd         quay.io/coreos/etcd:v3.5.18
 ```
 
-### 담당자 메모
+#### 5.3 어떻게 작동하나?
 
-- TODO:
+**1) 평상시**
+1. 192.168.100.23이 Leader로 읽기/쓰기 작업을 담당합니다.
+2. 10.30.4.11이 Replica가 되어 읽기를 수행하며, Primary로부터 실시간으로 복제를 받습니다.
+
+**2) 192.168.100.23 Down 발생시**
+1. 10.30.4.11이 Leader로 승격하여 읽기/쓰기 작업을 전담합니다.
+
+**3) Down 되었던 192.168.100.23이 복구되면?**
+1. 10.30.4.11이 계속 Leader를 유지하고, 반대로 192.168.100.23이 Replica가 됩니다.
+2. 복제 방향도 반대로 전환됩니다.
+
+#### 5.4 관련 작업 스크립트 안내
+
+온프레미스 환경에서 PostgreSQL HA 클러스터(Patroni, etcd, HAProxy)를 구축, 검증하고 장애 전환(Failover 및 Switchover)을 테스트하는 데 사용된 자동화 bash 스크립트들은 `on-prem/postgres-ha` 디렉터리에 포함되어 있습니다.
+
+[👉 on-prem/postgres-ha 스크립트 디렉터리 확인하기](./on-prem/postgres-ha/)
 
 ---
 
