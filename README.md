@@ -1,4 +1,4 @@
-# KKPP Infra - Hybrid Cloud & Internal LLM Platform
+# 🌱 콩콩팥팥 · Infra - Hybrid Cloud & Internal LLM Platform
 
 > **AWS - On-premises - VESSL AI를 연결한 하이브리드 인프라와 내부 LLM Agent 운영 환경**
 
